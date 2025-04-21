@@ -1,34 +1,53 @@
 name: "Python Poetry Setup"
-description: "A simple GitHub Action that prints a greeting"
+description: "A Github Action to setup Python, Poetry, and caching for Poetry Virtual Environments."
 author: "Ali Samji <ali@ybor.ai>"
 
 # Define the inputs for this action
 inputs:
-  who-to-greet:
-    description: "Who to greet"
-    required: true
-    default: "World"
-  message:
-    description: "Custom message to include"
+  version:
+    description: "The version of poetry to install. If not specified, defaults to the latest."
     required: false
-    default: "Hello"
 
 # Define the outputs for this action
 outputs:
-  time:
-    description: "The time we greeted you"
-    value: ${{ steps.hello.outputs.time }}
+  version:
+    description: "The version of poetry actually installed."
+    value: ${{ steps.version.outputs.poetry }}
 
 # Define the runs configuration
 runs:
   using: "composite"
   steps:
-    - name: Hello step
-      id: hello
+    # TODO: Add caching of pipx-installed poetry
+    - name: Install Poetry (Latest)
+      if: ${{ !inputs.version }}
       shell: bash
       run: |
-        echo "${{ inputs.message }}, ${{ inputs.who-to-greet }}!"
-        echo "time=$(date)" >> $GITHUB_OUTPUT
+        pipx install poetry
+
+    - name: Install Poetry (${{ inputs.version }})
+      if: ${{ inputs.version }}
+      shell: bash
+      run: |
+        pipx install 'poetry==${{ inputs.version }}'
+        # Potential ACT bug.
+        # # Ensure pipx-installed binaries are on the PATH
+        # pipx ensurepath
+        # source ~/.bashrc
+        # echo $PATH
+
+    # TODO: Add caching of poetry virtualenv based on poetry.lock
+    # - name: Setup Cache
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: ./.venv
+    #     key: poetry-venv-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+
+    - name: Get Versions
+      shell: bash
+      id: version
+      run: |
+        echo "poetry=$(poetry --version | cut -d' ' -f3)" >> $GITHUB_OUTPUT
 
 # Define the branding for the action in the GitHub Marketplace
 branding:
