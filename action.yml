@@ -18,7 +18,21 @@ outputs:
 runs:
   using: "composite"
   steps:
-    # TODO: Add caching of pipx-installed poetry
+    - name: Determine Pipx cache keys
+      shell: bash
+      run: |
+        pipx environment --value PIPX_BIN_DIR
+        pipx environment --value PIPX_LOCAL_VENVS
+        exit 1
+
+    # - name: Cache Poetry Installation
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: ./.venv
+    #     key: poetry-venv-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+    #     restore-keys: |
+    #       poetry-venv-${{ runner.os }}
+
     - name: Install Poetry (Latest)
       if: ${{ !inputs.version }}
       shell: bash
