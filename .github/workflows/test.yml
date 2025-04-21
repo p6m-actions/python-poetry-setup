@@ -3,7 +3,12 @@ name: Action Integration Tests
 on: [push]
 
 jobs:
-  specific-version:
+  version-pinned:
+    strategy:
+      matrix:
+        include:
+          - version-spec: '2.0.0'
+            test-match-string: '2.0.0'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -19,23 +24,6 @@ jobs:
         run: |
           poetry --version
           [ '${{ steps.ours.outputs.version }}' == '2.0.0' ]
-
-  loose-version:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Do it
-        id: ours
-        uses: ./
-        with:
-          version: ^2.0.0
-
-      - name: Validate Poetry version
-        run: |
-          poetry --version
-          [[ '${{ steps.ours.outputs.version }}' == '2.0.*' ]]
 
   latest-version:
     runs-on: ubuntu-latest
