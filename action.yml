@@ -18,20 +18,24 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: Determine Pipx cache keys
+    - name: Determine Pipx cache values
+      id: pipx-cache-helper
       shell: bash
       run: |
-        pipx environment --value PIPX_BIN_DIR
-        pipx environment --value PIPX_LOCAL_VENVS
-        exit 1
+        echo 'pipx_poetry_cache_paths<<EOF' >> $GITHUB_OUTPUT
+        echo "$(pipx environment --value PIPX_BIN_DIR)/poetry" >> $GITHUB_OUTPUT
+        echo "$(pipx environment --value PIPX_LOCAL_VENVS)/poetry" >> $GITHUB_OUTPUT
+        echo 'EOF' >> $GITHUB_OUTPUT
 
-    # - name: Cache Poetry Installation
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: ./.venv
-    #     key: poetry-venv-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
-    #     restore-keys: |
-    #       poetry-venv-${{ runner.os }}
+    # Due to pipx's usage of virtual environments, the python version does not actually
+    # matter for caching purposes.
+    - name: Cache Poetry Installation
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.pipx-cache-helper.outputs.paths }}
+        key: pipx-poetry-${{ runner.os }}-${{ inputs.version }}
+        restore-keys: |
+          pipx-poetry-${{ runner.os }}
 
     - name: Install Poetry (Latest)
       if: ${{ !inputs.version }}
@@ -47,12 +51,13 @@ runs:
 
     # TODO: Add support for less strict versioning. (IE '^{version}' instead of just '=={version}')
 
-    # TODO: Add caching of poetry virtualenv based on poetry.lock
-    # - name: Setup Cache
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: ./.venv
-    #     key: poetry-venv-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+    - name: Setup Poetry Virtual Environment Caching
+      uses: actions/cache@v3
+      with:
+        path: ./.venv
+        key: poetry-venv-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
+        restore-keys: |
+          poetry-venv-${{ runner.os }}
 
     - name: Get Versions
       shell: bash
