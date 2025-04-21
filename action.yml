@@ -22,7 +22,7 @@ runs:
       id: pipx-cache-helper
       shell: bash
       run: |
-        echo 'pipx_poetry_cache_paths<<EOF' >> $GITHUB_OUTPUT
+        echo 'paths<<EOF' >> $GITHUB_OUTPUT
         echo "$(pipx environment --value PIPX_BIN_DIR)/poetry" >> $GITHUB_OUTPUT
         echo "$(pipx environment --value PIPX_LOCAL_VENVS)/poetry" >> $GITHUB_OUTPUT
         echo 'EOF' >> $GITHUB_OUTPUT
