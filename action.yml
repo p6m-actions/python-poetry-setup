@@ -1,5 +1,5 @@
 name: "Python Poetry Setup"
-description: "A Github Action to setup Python, Poetry, and caching for Poetry Virtual Environments."
+description: "A Github Action to setup Poetry and caching for Poetry Virtual Environments."
 author: "Ali Samji <ali@ybor.ai>"
 
 # Define the inputs for this action
