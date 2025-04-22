@@ -22,7 +22,7 @@ runs:
   using: "composite"
   steps:
     - name: Setup Python
-      if: ${{ !inputs.python-version }}
+      if: ${{ inputs.python-version }}
       uses: actions/setup-python@v4
       with:
         python-version: ${{ inputs.python-version }}
@@ -79,7 +79,7 @@ runs:
       id: version
       run: |
         echo "poetry=$(poetry --version | awk -F'[) (]' '{print $4}')" >> $GITHUB_OUTPUT
-        echo "poetry=$(python --version | awk -F'[) (]' '{print $2}')" >> $GITHUB_OUTPUT
+        echo "python=$(python --version | awk -F'[) (]' '{print $2}')" >> $GITHUB_OUTPUT
 
 # Define the branding for the action in the GitHub Marketplace
 branding:
