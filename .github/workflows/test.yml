@@ -18,12 +18,12 @@ jobs:
         id: ours
         uses: ./
         with:
-          version: 2.0.0
+          poetry-version: 2.0.0
 
       - name: Validate Poetry version
         run: |
           poetry --version
-          [ '${{ steps.ours.outputs.version }}' == '2.0.0' ]
+          [ '${{ steps.ours.outputs.poetry-version }}' == '2.0.0' ]
 
   latest-version:
     runs-on: ubuntu-latest

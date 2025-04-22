@@ -4,13 +4,13 @@ author: "Ali Samji <ali@ybor.ai>"
 
 # Define the inputs for this action
 inputs:
-  version:
+  poetry-version:
     description: "The version of poetry to install. If not specified, defaults to the latest."
     required: false
 
 # Define the outputs for this action
 outputs:
-  version:
+  poetry-version:
     description: "The version of poetry actually installed."
     value: ${{ steps.version.outputs.poetry }}
 
@@ -33,21 +33,21 @@ runs:
       uses: actions/cache@v3
       with:
         path: ${{ steps.pipx-cache-helper.outputs.paths }}
-        key: pipx-poetry-${{ runner.os }}-${{ inputs.version }}
+        key: pipx-poetry-${{ runner.os }}-${{ inputs.poetry-version }}
         restore-keys: |
           pipx-poetry-${{ runner.os }}
 
     - name: Install Poetry (Latest)
-      if: ${{ !inputs.version }}
+      if: ${{ !inputs.poetry-version }}
       shell: bash
       run: |
         pipx install poetry
 
-    - name: Install Poetry (${{ inputs.version }})
-      if: ${{ inputs.version }}
+    - name: Install Poetry (${{ inputs.poetry-version }})
+      if: ${{ inputs.poetry-version }}
       shell: bash
       run: |
-        pipx install 'poetry==${{ inputs.version }}'
+        pipx install 'poetry==${{ inputs.poetry-version }}'
 
     # TODO: Add support for less strict versioning. (IE '^{version}' instead of just '=={version}')
 
