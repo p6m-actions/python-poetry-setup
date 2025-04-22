@@ -2,22 +2,31 @@ name: "Python Poetry Setup"
 description: "A Github Action to setup Poetry and caching for Poetry Virtual Environments."
 author: "Ali Samji <ali@ybor.ai>"
 
-# Define the inputs for this action
 inputs:
   poetry-version:
     description: "The version of poetry to install. If not specified, defaults to the latest."
     required: false
+  python-version:
+    description: "The version of Python to install. If not specified, does not modify the system-installed python."
+    required: false
 
-# Define the outputs for this action
 outputs:
   poetry-version:
     description: "The version of poetry actually installed."
     value: ${{ steps.version.outputs.poetry }}
+  python-version:
+    description: "The version of Python actually installed."
+    value: ${{ steps.version.outputs.python }}
 
-# Define the runs configuration
 runs:
   using: "composite"
   steps:
+    - name: Setup Python
+      if: ${{ !inputs.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ inputs.python-version }}
+
     - name: Determine Pipx cache values
       id: pipx-cache-helper
       shell: bash
@@ -70,6 +79,7 @@ runs:
       id: version
       run: |
         echo "poetry=$(poetry --version | awk -F'[) (]' '{print $4}')" >> $GITHUB_OUTPUT
+        echo "poetry=$(python --version | awk -F'[) (]' '{print $2}')" >> $GITHUB_OUTPUT
 
 # Define the branding for the action in the GitHub Marketplace
 branding:

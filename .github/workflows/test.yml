@@ -1,7 +1,7 @@
 name: Action Integration Tests
 
 on: [push]
-# Dummy Bump
+
 jobs:
   version-pinned:
     strategy:
@@ -19,11 +19,14 @@ jobs:
         uses: ./
         with:
           poetry-version: 2.0.0
+          python-version: '3.11'
 
       - name: Validate Poetry version
         run: |
+          python --version
           poetry --version
           [ '${{ steps.ours.outputs.poetry-version }}' == '2.0.0' ]
+          [ '${{ steps.ours.outputs.python-version }}' == '3.11.0' ]
 
   latest-version:
     runs-on: ubuntu-latest
@@ -37,6 +40,7 @@ jobs:
 
       - name: Validate Poetry installed
         run: |
+          which python
+          python --version
           which poetry
           poetry --version
-
