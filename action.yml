@@ -59,6 +59,12 @@ runs:
         restore-keys: |
           poetry-venv-${{ runner.os }}
 
+    - name: Setup Environment Variables to Configure Poetry
+      shell: bash
+      run: |
+        echo 'POETRY_VIRTUALENVS_IN_PROJECT=1' >> $GITHUB_ENV
+        echo 'POETRY_VIRTUALENVS_CREATE=1' >> $GITHUB_ENV
+
     - name: Get Versions
       shell: bash
       id: version
