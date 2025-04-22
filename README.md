@@ -14,18 +14,18 @@ Add the following step to your GitHub Actions workflow:
 ```yaml
 - uses: p6m-actions/python-poetry-setup@v1
   with:
-    poetry-version: '1.4.2'  # Optional: Specify Poetry version
+    version: '1.4.2'  # Optional: Specify Poetry version
 ```
 
 ## Inputs
 | Input          | Required | Default | Description                                        |
 |----------------|----------|---------|----------------------------------------------------|
-| poetry-version | false    | latest  | Specific version of Poetry to install (e.g. '1.4.2') |
+| version        | false    | latest  | Specific version of Poetry to install (e.g. '1.4.2') |
 
 ## Outputs
 | Output         | Description                               |
 |----------------|-------------------------------------------|
-| poetry-version | The actual version of Poetry that was installed |
+| version        | The actual version of Poetry that was installed |
 
 ## Examples
 Basic usage with latest Poetry version:
@@ -42,6 +42,6 @@ steps:
   - uses: actions/checkout@v3
   - uses: p6m-actions/python-poetry-setup@v1
     with:
-      poetry-version: '1.4.2'
+      version: '1.4.2'
   - run: poetry install
 ```

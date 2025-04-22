@@ -3,7 +3,7 @@ description: "A Github Action to setup Poetry and caching for Poetry Virtual Env
 author: "Ali Samji <ali@ybor.ai>"
 
 inputs:
-  poetry-version:
+  version:
     description: "The version of poetry to install. If not specified, defaults to the latest."
     required: false
   python-version:
@@ -11,7 +11,7 @@ inputs:
     required: false
 
 outputs:
-  poetry-version:
+  version:
     description: "The version of poetry actually installed."
     value: ${{ steps.version.outputs.poetry }}
   python-version:
@@ -42,21 +42,21 @@ runs:
       uses: actions/cache@v3
       with:
         path: ${{ steps.pipx-cache-helper.outputs.paths }}
-        key: pipx-poetry-${{ runner.os }}-${{ inputs.poetry-version }}
+        key: pipx-poetry-${{ runner.os }}-${{ inputs.version }}
         restore-keys: |
           pipx-poetry-${{ runner.os }}
 
     - name: Install Poetry (Latest)
-      if: ${{ !inputs.poetry-version }}
+      if: ${{ !inputs.version }}
       shell: bash
       run: |
         pipx install poetry
 
-    - name: Install Poetry (${{ inputs.poetry-version }})
-      if: ${{ inputs.poetry-version }}
+    - name: Install Poetry (${{ inputs.version }})
+      if: ${{ inputs.version }}
       shell: bash
       run: |
-        pipx install 'poetry==${{ inputs.poetry-version }}'
+        pipx install 'poetry==${{ inputs.version }}'
 
     # TODO: Add support for less strict versioning. (IE '^{version}' instead of just '=={version}')
 
