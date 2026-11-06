@@ -23,7 +23,7 @@ runs:
   steps:
     - name: Setup Python
       if: ${{ inputs.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ inputs.python-version }}
 
@@ -39,7 +39,7 @@ runs:
     # Due to pipx's usage of virtual environments, the python version does not actually
     # matter for caching purposes.
     - name: Cache Poetry Installation
-      uses: actions/cache@v3
+      uses: actions/cache@v5
       with:
         path: ${{ steps.pipx-cache-helper.outputs.paths }}
         key: pipx-poetry-${{ runner.os }}-${{ inputs.version }}
@@ -61,7 +61,7 @@ runs:
     # TODO: Add support for less strict versioning. (IE '^{version}' instead of just '=={version}')
 
     - name: Setup Poetry Virtual Environment Caching
-      uses: actions/cache@v3
+      uses: actions/cache@v5
       with:
         path: ./.venv
         key: poetry-venv-${{ runner.os }}-${{ hashFiles('poetry.lock') }}
